@@ -32,7 +32,7 @@ export const getTrips = async (
 };
 
 // @desc    Lấy thông tin trip theo id
-// @route   GET /trip/:id
+// @route   GET /:id
 // @access  Private
 export const getTripById = async (
   req: IProtectRequest | Request,
