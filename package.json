@@ -1,0 +1,11 @@
+{
+  "name": "zma_cuatienphuot_be",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/micericewice/zma_cuatienphuot_be.git",
+  "author": "Duc Nguyen <duc.nguyen@pascalsoftware.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
