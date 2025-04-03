@@ -78,14 +78,14 @@ export const createTrip = async (req: Request, res: Response): Promise<any> => {
 
     const trip = await Trip.create({
       name,
-      startDate,
+      startDate: new Date(startDate * 1000),
       note,
-      endDate,
+      endDate: new Date(endDate * 1000),
       createdBy: _id,
       updatedBy: _id,
     });
 
-    return res.status(STATUS_CODES.CREATED).json({
+    return res.status(STATUS_CODES.SUCCESS).json({
       success: true,
       data: trip,
     });
