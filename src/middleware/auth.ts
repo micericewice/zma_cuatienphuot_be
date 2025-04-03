@@ -61,6 +61,7 @@ export const protect = async (
         zaloId: user?.id,
         name: user?.name,
         avatar: user?.picture?.data?.url,
+        zaloAccessToken: token,
       });
 
       (req as IProtectRequest).user = newUser;
