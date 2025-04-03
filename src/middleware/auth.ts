@@ -12,21 +12,6 @@ declare global {
   }
 }
 
-// const getUserInfoFromZalo = async (accessToken: string) => {
-//   let url = "https://graph.zalo.me/v2.0/me?fields=id,name,picture";
-
-//   let options = {
-//     method: "GET",
-//     headers: {
-//       access_token: accessToken,
-//     },
-//   };
-
-//   const response = await fetch(url, options);
-//   const data = await response.json();
-//   return data;
-// };
-
 // Middleware bảo vệ route
 export const protect = async (
   req: Request,
