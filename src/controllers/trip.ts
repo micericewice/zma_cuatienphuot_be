@@ -1,16 +1,12 @@
 import { Request, Response } from "express";
-import { IProtectRequest } from "../interfaces";
 import Trip from "../models/Trip";
 import { ERROR_MESSAGES, STATUS_CODES } from "../utils/constants";
 // @desc    Lấy thông tin trips
 // @route   GET /trips
 // @access  Private
-export const getTrips = async (
-  req: IProtectRequest | Request,
-  res: Response
-): Promise<any> => {
+export const getTrips = async (req: Request, res: Response): Promise<any> => {
   try {
-    const user = (req as IProtectRequest).user;
+    const user = req.user;
 
     const page = parseInt(req.query.page as string) || 1; // Lấy số trang từ query, mặc định là 1
     const limit = parseInt(req.query.limit as string) || 10; // Lấy kích thước trang từ query, mặc định là 10
@@ -46,7 +42,7 @@ export const getTrips = async (
 // @route   GET /:id
 // @access  Private
 export const getTripById = async (
-  req: IProtectRequest | Request,
+  req: Request,
   res: Response
 ): Promise<any> => {
   try {
@@ -75,13 +71,10 @@ export const getTripById = async (
 // @desc    Tạo trip mới
 // @route   POST /trip
 // @access  Private
-export const createTrip = async (
-  req: Request | IProtectRequest,
-  res: Response
-): Promise<any> => {
+export const createTrip = async (req: Request, res: Response): Promise<any> => {
   try {
     const { name, note, startDate, endDate } = req.body;
-    const { _id } = (req as IProtectRequest).user;
+    const { _id } = req.user;
 
     const trip = await Trip.create({
       name,

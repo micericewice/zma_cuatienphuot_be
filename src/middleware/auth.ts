@@ -1,22 +1,31 @@
 import { NextFunction, Request, Response } from "express";
-import { IProtectRequest } from "../interfaces";
-import User from "../models/User";
+import jwt from "jsonwebtoken";
+import { jwtConfig } from "../config/jwt";
 import { ERROR_MESSAGES, STATUS_CODES } from "../utils/constants";
 
-const getUserInfoFromZalo = async (accessToken: string) => {
-  let url = "https://graph.zalo.me/v2.0/me?fields=id,name,picture";
+// Mở rộng kiểu Request của Express để có thể chứa thông tin user
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any; // Hoặc định nghĩa một Interface cụ thể cho user payload
+    }
+  }
+}
 
-  let options = {
-    method: "GET",
-    headers: {
-      access_token: accessToken,
-    },
-  };
+// const getUserInfoFromZalo = async (accessToken: string) => {
+//   let url = "https://graph.zalo.me/v2.0/me?fields=id,name,picture";
 
-  const response = await fetch(url, options);
-  const data = await response.json();
-  return data;
-};
+//   let options = {
+//     method: "GET",
+//     headers: {
+//       access_token: accessToken,
+//     },
+//   };
+
+//   const response = await fetch(url, options);
+//   const data = await response.json();
+//   return data;
+// };
 
 // Middleware bảo vệ route
 export const protect = async (
@@ -24,16 +33,8 @@ export const protect = async (
   res: Response,
   next: NextFunction
 ): Promise<any> => {
-  let token: string | undefined;
-
-  // Kiểm tra header Authorization
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    // Lấy token từ header
-    token = req.headers.authorization.split(" ")[1];
-  }
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Lấy token từ header
 
   // Kiểm tra token tồn tại
   if (!token) {
@@ -43,38 +44,23 @@ export const protect = async (
     });
   }
 
-  try {
-    // Lấy thông tin user từ zalo
-    const user = await getUserInfoFromZalo(token);
-
-    if (!user) {
-      return res.status(STATUS_CODES.NOT_FOUND).json({
+  jwt.verify(token, jwtConfig.secret, (err: any, userPayload: any) => {
+    if (err) {
+      console.error("Lỗi xác thực token:", err.message);
+      if (err.name === "TokenExpiredError") {
+        return res.status(STATUS_CODES.UNAUTHORIZED).json({
+          success: false,
+          message: ERROR_MESSAGES.INVALID_TOKEN,
+        });
+      }
+      return res.status(STATUS_CODES.UNAUTHORIZED).json({
         success: false,
-        message: ERROR_MESSAGES.USER_NOT_FOUND,
+        message: ERROR_MESSAGES.INVALID_TOKEN,
       });
-    }
+    } // Forbidden
 
-    // tìm thông tin user trong db
-    const userInDb = await User.findOne({ zaloId: user?.id });
-    if (!userInDb) {
-      const newUser = await User.create({
-        zaloId: user?.id,
-        name: user?.name,
-        avatar: user?.picture?.data?.url,
-        zaloAccessToken: token,
-      });
-
-      (req as IProtectRequest).user = newUser;
-    } else {
-      // Lưu thông tin user vào request
-      (req as IProtectRequest).user = userInDb.toObject();
-    }
-    next();
-  } catch (error) {
-    console.error("Lỗi xác thực:", (error as Error).message);
-    return res.status(STATUS_CODES.UNAUTHORIZED).json({
-      success: false,
-      message: ERROR_MESSAGES.INVALID_TOKEN,
-    });
-  }
+    // Token hợp lệ, lưu thông tin user từ payload vào request để các xử lý sau có thể dùng
+    req.user = userPayload;
+    next(); // Cho phép request đi tiếp
+  });
 };

@@ -28,7 +28,7 @@ const createRandomTrip = (users: IUser[]) => () => {
 
 const createSampleTrips = (user: IUser[]) =>
   faker.helpers.multiple(createRandomTrip(user), {
-    count: 100,
+    count: 10,
   });
 
 // --- Dữ liệu mẫu --- Bạn có thể thay đổi hoặc thêm dữ liệu tại đây
@@ -47,7 +47,7 @@ const seedDatabase = async () => {
 
     // Tùy chọn: Xóa dữ liệu cũ trước khi thêm mới
     //   console.log("Đang xóa dữ liệu trips cũ...");
-    //   await Trip.deleteMany({});
+    await Trip.deleteMany({});
     //   console.log("Đã xóa dữ liệu trips cũ.");
 
     console.log("Bắt đầu thêm dữ liệu mẫu...");

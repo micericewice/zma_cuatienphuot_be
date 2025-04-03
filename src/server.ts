@@ -2,6 +2,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express, { NextFunction, Request, Response } from "express";
 import connectDB from "./config/db";
+import AuthRoutes from "./routes/auth";
 import TripRoutes from "./routes/trip";
 import { ERROR_MESSAGES, STATUS_CODES } from "./utils/constants";
 
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Mount routers
 app.use("/api/trip", TripRoutes);
+app.use("/api/auth", AuthRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello Cua Tien Phuot");

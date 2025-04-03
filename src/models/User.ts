@@ -6,9 +6,9 @@ export interface IUser extends Document {
   avatar: string;
   email: string;
   phone: string;
-  zaloAccessToken: string;
   createdAt: Date;
   updatedAt: Date;
+  refreshToken: string;
 }
 
 const UserSchema: Schema = new Schema(
@@ -18,7 +18,7 @@ const UserSchema: Schema = new Schema(
     avatar: { type: String, required: false },
     email: { type: String, required: false },
     phone: { type: String, required: false },
-    zaloAccessToken: { type: String, required: false },
+    refreshToken: { type: String, select: false },
   },
   {
     timestamps: true,
