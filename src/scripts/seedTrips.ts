@@ -20,24 +20,24 @@ const sampleTrips = [
     startDate: new Date("2024-08-15"),
     endDate: new Date("2024-08-18"),
     note: "Khám phá thác Datanla và thưởng thức ẩm thực đêm.",
-    createdBy: "67ed34e67682cb23632d7d63",
-    updatedBy: "67ed34e67682cb23632d7d63",
+    createdBy: "67ee1ab3714c90e1a118a3c8",
+    updatedBy: "67ee1ab3714c90e1a118a3c8",
   },
   {
     name: "Phượt Hà Giang mùa hoa tam giác mạch",
     startDate: new Date("2024-10-20"),
     endDate: new Date("2024-10-25"),
     // note để trống
-    createdBy: "67ed34e67682cb23632d7d63",
-    updatedBy: "67ed34e67682cb23632d7d63",
+    createdBy: "67ee1ab3714c90e1a118a3c8",
+    updatedBy: "67ee1ab3714c90e1a118a3c8",
   },
   {
     name: "Nghỉ dưỡng tại Phú Quốc",
     startDate: new Date("2024-12-01"),
     endDate: new Date("2024-12-07"),
     note: "Tắm biển Bãi Sao, lặn ngắm san hô.",
-    createdBy: "67ed34e67682cb23632d7d63",
-    updatedBy: "67ed34e67682cb23632d7d63",
+    createdBy: "67ee1ab3714c90e1a118a3c8",
+    updatedBy: "67ee1ab3714c90e1a118a3c8",
   },
 ];
 // --- Kết thúc dữ liệu mẫu ---
@@ -50,7 +50,7 @@ const seedDatabase = async () => {
 
     // Tùy chọn: Xóa dữ liệu cũ trước khi thêm mới
     // console.log("Đang xóa dữ liệu trips cũ...");
-    // await Trip.deleteMany({});
+    await Trip.deleteMany({});
     // console.log("Đã xóa dữ liệu trips cũ.");
 
     console.log("Bắt đầu thêm dữ liệu mẫu...");

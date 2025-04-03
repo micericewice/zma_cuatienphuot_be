@@ -10,17 +10,28 @@ export const getTrips = async (
   res: Response
 ): Promise<any> => {
   try {
-    const trips = await Trip.find();
+    const user = (req as IProtectRequest).user;
 
-    if (!trips) {
-      return res
-        .status(STATUS_CODES.NOT_FOUND)
-        .json({ success: false, message: ERROR_MESSAGES.USER_NOT_FOUND });
-    }
+    const page = parseInt(req.query.page as string) || 1; // Lấy số trang từ query, mặc định là 1
+    const limit = parseInt(req.query.limit as string) || 10; // Lấy kích thước trang từ query, mặc định là 10
+    const skip = (page - 1) * limit; // Tính toán số bản ghi cần bỏ qua
+
+    const trips = await Trip.find({ createdBy: user._id })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Trip.countDocuments({ createdBy: user._id }); // Đếm tổng số trips
+    const totalPages = Math.ceil(total / limit); // Tính tổng số trang
 
     return res.status(STATUS_CODES.SUCCESS).json({
       success: true,
       data: trips,
+      pagination: {
+        total: total,
+        totalPages,
+        currentPage: page,
+        limit,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -70,15 +81,15 @@ export const createTrip = async (
 ): Promise<any> => {
   try {
     const { name, note, startDate, endDate } = req.body;
-    const { userId } = (req as IProtectRequest).user;
+    const { _id } = (req as IProtectRequest).user;
 
     const trip = await Trip.create({
       name,
       startDate,
       note,
       endDate,
-      createdBy: userId,
-      updatedBy: userId,
+      createdBy: _id,
+      updatedBy: _id,
     });
 
     return res.status(STATUS_CODES.CREATED).json({
