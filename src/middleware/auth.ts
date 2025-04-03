@@ -66,7 +66,7 @@ export const protect = async (
       (req as IProtectRequest).user = newUser;
     } else {
       // Lưu thông tin user vào request
-      (req as IProtectRequest).user = userInDb;
+      (req as IProtectRequest).user = userInDb.toObject();
     }
     next();
   } catch (error) {
