@@ -47,7 +47,7 @@ const seedDatabase = async () => {
 
     // Tùy chọn: Xóa dữ liệu cũ trước khi thêm mới
     //   console.log("Đang xóa dữ liệu trips cũ...");
-    await Trip.deleteMany({});
+    // await Trip.deleteMany({});
     //   console.log("Đã xóa dữ liệu trips cũ.");
 
     console.log("Bắt đầu thêm dữ liệu mẫu...");

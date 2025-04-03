@@ -44,13 +44,15 @@ export const login = async (req: Request, res: Response): Promise<any> => {
     res.status(STATUS_CODES.SUCCESS).json({
       success: true,
       message: "Đăng nhập thành công",
-      accessToken,
-      refreshToken,
-      // Có thể gửi thêm thông tin người dùng nếu cần
-      user: {
-        name: user.name,
-        zaloId: user.zaloId,
-        _id: user._id,
+      data: {
+        accessToken,
+        refreshToken,
+        // Có thể gửi thêm thông tin người dùng nếu cần
+        user: {
+          name: user.name,
+          zaloId: user.zaloId,
+          _id: user._id,
+        },
       },
     });
   } catch (error) {
@@ -107,7 +109,7 @@ export const refreshToken = async (
         res.json({
           success: false,
           message: ERROR_MESSAGES.INVALID_TOKEN,
-          accessToken: newAccessToken,
+          data: { accessToken: newAccessToken },
         });
       }
     );
