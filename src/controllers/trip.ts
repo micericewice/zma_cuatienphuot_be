@@ -6,7 +6,12 @@ import { ERROR_MESSAGES, STATUS_CODES } from "../utils/constants";
 // @access  Private
 export const getTrips = async (req: Request, res: Response): Promise<any> => {
   try {
-    const user = req.user;
+    const user = req?.user;
+    if (!user?._id) {
+      return res
+        .status(STATUS_CODES.UNAUTHORIZED)
+        .json({ success: false, message: ERROR_MESSAGES.UNAUTHORIZED_ACCESS });
+    }
 
     const page = parseInt(req.query.page as string) || 1; // Lấy số trang từ query, mặc định là 1
     const limit = parseInt(req.query.limit as string) || 10; // Lấy kích thước trang từ query, mặc định là 10
@@ -74,7 +79,12 @@ export const getTripById = async (
 export const createTrip = async (req: Request, res: Response): Promise<any> => {
   try {
     const { name, note, startDate, endDate } = req.body;
-    const { _id } = req.user;
+    const { _id } = req?.user ?? {};
+    if (!_id) {
+      return res
+        .status(STATUS_CODES.UNAUTHORIZED)
+        .json({ success: false, message: ERROR_MESSAGES.UNAUTHORIZED_ACCESS });
+    }
 
     const trip = await Trip.create({
       name,
