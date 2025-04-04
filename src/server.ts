@@ -2,6 +2,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express, { NextFunction, Request, Response } from "express";
 import connectDB from "./config/db";
+import { swaggerDocs, swaggerUi } from "./config/swagger";
 import AuthRoutes from "./routes/auth";
 import TripRoutes from "./routes/trip";
 import ZaloRoutes from "./routes/zalo";
@@ -21,6 +22,8 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Tích hợp Swagger UI
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // Mount routers
 app.use("/api/trip", TripRoutes);
 app.use("/api/auth", AuthRoutes);

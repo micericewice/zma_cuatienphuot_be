@@ -9,6 +9,34 @@ import Session, {
 import User from "../models/User";
 import { ERROR_MESSAGES, STATUS_CODES } from "../utils/constants";
 
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Đăng nhập
+ *     parameters:
+ *       - name: deviceId
+ *         in: header
+ *         description: deviceId của người dùng
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               zaloId:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *               accessToken:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Thông tin đăng nhập
+ */
 export const login = async (req: Request, res: Response): Promise<any> => {
   const { zaloId, name, accessToken } = req.body;
   const { deviceId } = req.headers;
