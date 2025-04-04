@@ -34,19 +34,28 @@ export const addSession = async (
   userId: string,
   deviceId: string,
   accessToken: string,
-  refreshToken: string,
-  expiresAt: Date
+  refreshToken: string
 ) => {
   try {
-    const session = new Session({
-      userId,
-      deviceId,
-      accessToken,
-      refreshToken,
-      expiresAt,
-    });
+    const session = await Session.findOneAndUpdate(
+      {
+        userId,
+        deviceId,
+      },
+      {
+        $setOnInsert: {
+          refreshToken,
+          accessToken,
+          userId,
+          deviceId,
+        },
+      },
+      { upsert: true, new: true }
+    );
+
     await session.save();
     console.log("Session đã được thêm thành công!");
+    return session;
   } catch (error) {
     console.error("Lỗi khi thêm session:", error);
   }

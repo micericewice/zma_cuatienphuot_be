@@ -1,9 +1,19 @@
 import { Request, Response } from "express";
 import Trip from "../models/Trip";
 import { ERROR_MESSAGES, STATUS_CODES } from "../utils/constants";
-// @desc    Lấy thông tin trips
-// @route   GET /trips
-// @access  Private
+
+/**
+ * @swagger
+ * /api/trip/trips:
+ *   get:
+ *     tags: [Trip]
+ *     summary: Lấy danh sách chuyến đi
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Thông tin đăng nhập
+ */
 export const getTrips = async (req: Request, res: Response): Promise<any> => {
   try {
     const user = req?.user;
@@ -43,9 +53,25 @@ export const getTrips = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-// @desc    Lấy thông tin trip theo id
-// @route   GET /:id
-// @access  Private
+/**
+ * @swagger
+ * /api/trip/{id}:
+ *   get:
+ *     tags: [Trip]
+ *     summary: Lấy thông tin trip theo id
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID của chuyến đi.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Thông tin đăng nhập
+ */
 export const getTripById = async (
   req: Request,
   res: Response

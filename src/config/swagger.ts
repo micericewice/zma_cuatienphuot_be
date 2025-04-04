@@ -17,6 +17,7 @@ const swaggerOptions: SwaggerOptions = {
       },
       { url: "https://zma-cuatienphuot-be-psi.vercel.app" },
     ],
+
     tags: [
       {
         name: "Auth",
@@ -31,6 +32,15 @@ const swaggerOptions: SwaggerOptions = {
         description: "Các API liêng quan đến giao dịch",
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
   },
   apis: ["./src/controllers/*.{ts,js}"], // Đường dẫn đến các tệp chứa các chú thích API
 };

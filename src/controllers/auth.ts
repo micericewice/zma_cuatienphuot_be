@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { jwtConfig } from "../config/jwt"; // Đường dẫn đến file config của bạn
 import { RefreshTokenPayload } from "../interfaces";
 import Session, {
+  addSession,
   generateAccessToken,
   verifyRefreshToken,
 } from "../models/Session";
@@ -29,6 +30,7 @@ import { ERROR_MESSAGES, STATUS_CODES } from "../utils/constants";
  *             properties:
  *               zaloId:
  *                 type: string
+ *                 required: true
  *               name:
  *                 type: string
  *               accessToken:
@@ -39,8 +41,7 @@ import { ERROR_MESSAGES, STATUS_CODES } from "../utils/constants";
  */
 export const login = async (req: Request, res: Response): Promise<any> => {
   const { zaloId, name, accessToken } = req.body;
-  const { deviceId } = req.headers;
-
+  const deviceId = req.headers["deviceid"];
   try {
     // Xác thực người dùng
     let user;
@@ -71,13 +72,11 @@ export const login = async (req: Request, res: Response): Promise<any> => {
     );
 
     // Lưu Refresh Token vào DB cho user này
-    const session = await Session.findOneAndUpdate(
-      {
-        userId: user._id,
-        deviceId,
-      },
-      { $setOnInsert: { refreshToken, accessToken } },
-      { upsert: true, new: true }
+    const ss = await addSession(
+      user._id as string,
+      deviceId as string,
+      accessToken,
+      refreshToken
     );
 
     //  Gửi token về cho client
@@ -85,8 +84,8 @@ export const login = async (req: Request, res: Response): Promise<any> => {
       success: true,
       message: "Đăng nhập thành công",
       data: {
-        accessToken: session.accessToken,
-        refreshToken: session.refreshToken,
+        accessToken: ss?.accessToken,
+        refreshToken: ss?.refreshToken,
         // Có thể gửi thêm thông tin người dùng nếu cần
         user: {
           name: user.name,
@@ -108,7 +107,7 @@ export const refreshToken = async (
   res: Response
 ): Promise<any> => {
   const { refreshToken } = req.body;
-  const { deviceId } = req.headers;
+  const deviceId = req.headers["deviceid"];
 
   try {
     // Tìm session trong DB có refresh token khớp
@@ -167,7 +166,7 @@ export const refreshToken = async (
 
 export const logout = async (req: Request, res: Response): Promise<any> => {
   const { _id } = req.user ?? {};
-  const { deviceId } = req.headers;
+  const deviceId = req.headers["deviceid"];
   try {
     const foundSession = await Session.findOne({ userId: _id, deviceId });
     if (foundSession) {
