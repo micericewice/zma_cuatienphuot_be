@@ -10,10 +10,12 @@ const swaggerOptions: SwaggerOptions = {
       description: "API documentation for Cua Tien Phuot",
     },
     servers: [
+      { url: "https://zma-cuatienphuot-be.vercel.app" },
       {
         url: "http://localhost:3000",
         name: "localhost",
       },
+      { url: "https://zma-cuatienphuot-be-psi.vercel.app" },
     ],
     tags: [
       {
@@ -30,9 +32,8 @@ const swaggerOptions: SwaggerOptions = {
       },
     ],
   },
-  apis: ["./src/controllers/*.ts"], // Đường dẫn đến các tệp chứa các chú thích API
+  apis: ["./src/controllers/*.{ts,js}"], // Đường dẫn đến các tệp chứa các chú thích API
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-
 export { swaggerDocs, swaggerUi };
