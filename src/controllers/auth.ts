@@ -42,6 +42,11 @@ import { ERROR_MESSAGES, STATUS_CODES } from "../utils/constants";
 export const login = async (req: Request, res: Response): Promise<any> => {
   const { zaloId, name, accessToken } = req.body;
   const deviceId = req.headers["deviceid"];
+  if (!deviceId || !zaloId) {
+    return res
+      .status(STATUS_CODES.BAD_REQUEST)
+      .json({ success: false, message: ERROR_MESSAGES.TOKEN_REQUIRED });
+  }
   try {
     // Xác thực người dùng
     let user;
